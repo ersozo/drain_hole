@@ -17,7 +17,7 @@ text_result = "OK"
 font = cv2.FONT_HERSHEY_COMPLEX
 
 # threshold values for edge detection
-lower = 30 
+lower = 45 
 upper = 90 
 
 cap = cv2.VideoCapture(1)
@@ -28,16 +28,20 @@ for i in range(1, 6):
 
 grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 maskedGrayFrame = cv2.bitwise_and(grayFrame, grayFrame, mask=mask)
-blurred_img = cv2.blur(maskedGrayFrame, ksize=(5, 5))
-edges = cv2.Canny(blurred_img, threshold1=lower, threshold2=upper)
+
+filtered = cv2.bilateralFilter(maskedGrayFrame, 7, 50, 50)
+edges = cv2.Canny(filtered, threshold1=lower, threshold2=upper)
+
 limit = edges.mean() * scale   # for comparison value
 
 while True:
     ret, frame = cap.read()
     grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     maskedGrayFrame = cv2.bitwise_and(grayFrame, grayFrame, mask=mask)
-    blurred_img = cv2.blur(maskedGrayFrame, ksize=(5, 5))
-    edges = cv2.Canny(blurred_img, threshold1=lower, threshold2=upper)
+
+    filtered = cv2.bilateralFilter(maskedGrayFrame, 7, 50, 50)
+    edges = cv2.Canny(filtered, threshold1=lower, threshold2=upper)
+
     value = edges.mean()
 
     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
