@@ -1,8 +1,6 @@
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
 import winsound
-import time
 
 frequency = 2500  # Set Frequency To 2500 Hertz
 duration = 1000   # Set Duration To 1000 ms == 1 second
@@ -18,6 +16,10 @@ text_control = "SU TAHLIYE TIKANIKLIK KONTROL"
 text_result = "OK"
 font = cv2.FONT_HERSHEY_COMPLEX
 
+# threshold values for edge detection
+lower = 30 
+upper = 90 
+
 cap = cv2.VideoCapture(1)
 
 # capturing frames to adapt to ambience lighting.
@@ -27,7 +29,7 @@ for i in range(1, 6):
 grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 maskedGrayFrame = cv2.bitwise_and(grayFrame, grayFrame, mask=mask)
 blurred_img = cv2.blur(maskedGrayFrame, ksize=(5, 5))
-edges = cv2.Canny(blurred_img, threshold1=127, threshold2=127)
+edges = cv2.Canny(blurred_img, threshold1=lower, threshold2=upper)
 limit = edges.mean() * scale   # for comparison value
 
 while True:
@@ -35,7 +37,7 @@ while True:
     grayFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     maskedGrayFrame = cv2.bitwise_and(grayFrame, grayFrame, mask=mask)
     blurred_img = cv2.blur(maskedGrayFrame, ksize=(5, 5))
-    edges = cv2.Canny(blurred_img, threshold1=127, threshold2=127)
+    edges = cv2.Canny(blurred_img, threshold1=lower, threshold2=upper)
     value = edges.mean()
 
     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
